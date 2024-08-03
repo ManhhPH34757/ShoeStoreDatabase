@@ -222,3 +222,5 @@ CREATE TABLE dbo.order_history(
 );
 GO
 
+ALTER TABLE dbo.product_details ADD _weight FLOAT
+
