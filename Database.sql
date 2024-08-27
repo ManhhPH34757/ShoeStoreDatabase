@@ -1,226 +1,268 @@
-CREATE DATABASE ShoeStore;
-GO
+DROP DATABASE IF EXISTS shoe_store_database;
 
-USE ShoeStore;
-GO
+CREATE DATABASE shoe_store_database;
 
-CREATE TABLE dbo.admins(
-	_id_admin INT IDENTITY(1,1) PRIMARY KEY,
-	_admin_code VARCHAR(20) UNIQUE NOT NULL,
-	_first_name NVARCHAR(50),
-	_last_name NVARCHAR(50),
-	_gender VARCHAR(10),
-	_address NVARCHAR(255),
-	_phone_number VARCHAR(15) UNIQUE,
-	_email VARCHAR(255) UNIQUE, 
-	_password VARBINARY(64),
-	_role VARCHAR(30),
-	_status NVARCHAR(255),
-	_birthday DATE
-);
-GO
+USE shoe_store_database;
 
-CREATE TABLE dbo.customer(
-	_id_customer INT IDENTITY(1,1) PRIMARY KEY,
-	_customer_code VARCHAR(20) UNIQUE NOT NULL,
-	_first_name NVARCHAR(50),
-	_last_name NVARCHAR(50),
-	_gender VARCHAR(10),
-	_address NVARCHAR(255),
-	_phone_number VARCHAR(15) UNIQUE,
-	_email VARCHAR(255) UNIQUE,
-	_birthday DATE
+CREATE TABLE staffs(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	staff_code VARCHAR(100) UNIQUE NOT NULL,
+	full_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	gender VARCHAR(10) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	birthday DATE DEFAULT CURRENT_DATE,
+	phone_number VARCHAR(13) UNIQUE NOT NULL,
+	address VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	email VARCHAR(255) UNIQUE NOT NULL, 
+	password VARCHAR(255) DEFAULT '',
+	role VARCHAR(10) NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_DATE,
+	updated_at DATETIME DEFAULT CURRENT_DATE,
+	is_active TINYINT(1) DEFAULT 1
 );
-GO
-CREATE TABLE dbo.account_customer(
-	_id_account_customer INT IDENTITY(1,1) PRIMARY KEY,
-	_id_customer INT UNIQUE NOT NULL,
-	_password VARBINARY(64),
-	_accumulated_points BIGINT,
-	_status NVARCHAR(255),
-	CONSTRAINT FK_accountCustomer_idCustomer FOREIGN KEY(_id_customer) REFERENCES dbo.customer(_id_customer) ON UPDATE CASCADE ON DELETE CASCADE
-);
-GO
-CREATE TABLE dbo.address_customer(
-	_id_address INT IDENTITY(1,1) PRIMARY KEY,
-	_id_customer INT,
-	_customer_name NVARCHAR(100),
-	_phone_number VARCHAR(15),
-	_address NVARCHAR(255),
-	CONSTRAINT FK_address_idCustomer FOREIGN KEY(_id_customer) REFERENCES dbo.customer(_id_customer) ON UPDATE CASCADE ON DELETE CASCADE
-);
-GO
-CREATE TABLE dbo.brand(
-	_id_brand INT IDENTITY(1,1) PRIMARY KEY,
-	_brand_code VARCHAR(20) UNIQUE NOT NULL,
-	_brand_name NVARCHAR(50),
-	_description  NVARCHAR(255)
-);
-GO
-CREATE TABLE dbo.category(
-	_id_category INT IDENTITY(1,1) PRIMARY KEY,
-	_category_code VARCHAR(20) UNIQUE NOT NULL,
-	_category_name NVARCHAR(50),
-	_description  NVARCHAR(255)
-);
-GO
-CREATE TABLE dbo.material(
-	_id_material INT IDENTITY(1,1) PRIMARY KEY,
-	_material_code VARCHAR(20) UNIQUE NOT NULL,
-	_material_name NVARCHAR(50)
-);
-GO
-CREATE TABLE dbo.sole(
-	_id_sole INT IDENTITY(1,1) PRIMARY KEY,
-	_sole_code VARCHAR(50) UNIQUE NOT NULL,
-	_sole_name NVARCHAR(50)
-);
-GO
-CREATE TABLE dbo.color(
-	_id_color INT IDENTITY(1,1) PRIMARY KEY,
-	_color_code VARCHAR(50) UNIQUE NOT NULL,
-	_color_name NVARCHAR(50)
-);
-GO
-CREATE TABLE dbo.sizes(
-	_id_size INT IDENTITY(1,1) PRIMARY KEY,
-	_size_code VARCHAR(50) UNIQUE NOT NULL,
-	_size_name NVARCHAR(50)
-);
-GO
-CREATE TABLE dbo.coupons(
-	_id_coupons INT IDENTITY(1,1) PRIMARY KEY,
-	_coupons_code VARCHAR(50) UNIQUE NOT NULL,
-	_conditions DECIMAL(38,5),
-	_coupons_price DECIMAL(38,5),
-	_quantity INT,
-	_date_created DATETIME,
-	_deadline DATETIME
-);
-GO
-CREATE TABLE dbo.sale(
-	_id_sale INT IDENTITY(1,1) PRIMARY KEY,
-	_sale_code VARCHAR(50) UNIQUE NOT NULL,
-	_sale_name NVARCHAR(MAX),
-	_percent FLOAT,
-	_date_created DATETIME,
-	_deadline DATETIME
-);
-GO
 
-CREATE TABLE dbo.product(
-	_id_product INT IDENTITY(1,1) PRIMARY KEY,
-	_product_code VARCHAR(50) UNIQUE NOT NULL,
-	_product_name NVARCHAR(100),
-	_id_brand INT,
-	_id_category INT,
-	_id_sole INT,
-	_id_material INT,
-	_date_created DATETIME,
-	_date_updated DATETIME,
-	CONSTRAINT FK_product_idBrand FOREIGN KEY(_id_brand) REFERENCES dbo.brand(_id_brand) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_product_idCategory FOREIGN KEY(_id_category) REFERENCES dbo.category(_id_category) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_product_idSole FOREIGN KEY(_id_sole) REFERENCES dbo.sole(_id_sole) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_product_idMaterial FOREIGN KEY(_id_material) REFERENCES dbo.material(_id_material) ON UPDATE CASCADE ON DELETE CASCADE
+CREATE TABLE customers(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	customer_code VARCHAR(100) UNIQUE NOT NULL,
+	full_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	gender VARCHAR(10) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	birthday DATE DEFAULT CURRENT_DATE,
+	phone_number VARCHAR(13) UNIQUE NOT NULL,
+	address VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	email VARCHAR(255) UNIQUE NOT NULL, 
+	password VARCHAR(255) DEFAULT '',
+	created_at DATETIME DEFAULT CURRENT_DATE,
+	updated_at DATETIME DEFAULT CURRENT_DATE
 );
-GO
 
-CREATE TABLE dbo.product_images(
-	_id_product_images INT IDENTITY(1,1) PRIMARY KEY,
-	_id_product INT,
-	_images VARCHAR(MAX),
-	CONSTRAINT FK_productImages_idProduct FOREIGN KEY(_id_product) REFERENCES dbo.product(_id_product) ON UPDATE CASCADE ON DELETE CASCADE
-)
-GO
+CREATE TABLE address_customer(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	id_customer INT NOT NULL,
+	customer_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	phone_number VARCHAR(13) NOT NULL,
+	address VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	CONSTRAINT FK_address_customer FOREIGN KEY(id_customer) REFERENCES customers(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
 
-CREATE TABLE dbo.product_details(
-	_id_product_details INT IDENTITY(1,1) PRIMARY KEY,
-	_id_product INT,
-	_id_color INT,
-	_id_size INT,
-	_id_sale INT,
-	_price_old DECIMAL(38,5),
-	_price_new DECIMAL(38,5),
-	_quantity INT,
-	_status NVARCHAR(255),
-	_date_created DATETIME,
-	_date_updated DATETIME,
-	CONSTRAINT FK_productDetails_idProduct FOREIGN KEY(_id_product) REFERENCES dbo.product(_id_product) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_productDetails_idColor FOREIGN KEY(_id_color) REFERENCES dbo.color(_id_color) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_productDetails_idSize FOREIGN KEY(_id_size) REFERENCES dbo.sizes(_id_size) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_productDetails_idSale FOREIGN KEY(_id_sale) REFERENCES dbo.sale(_id_sale) ON UPDATE CASCADE ON DELETE CASCADE
+CREATE TABLE brands(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	brand_code VARCHAR(100) UNIQUE NOT NULL,
+	brand_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	description VARCHAR(255) DEFAULT ''
 );
-GO
-CREATE TABLE dbo.history_sale(
-	_id_history_sale INT IDENTITY(1,1) PRIMARY KEY,
-	_id_product_details INT,
-	_id_sale INT
-);
-GO
-CREATE TABLE dbo.cart(
-	_id_cart INT IDENTITY(1,1) PRIMARY KEY,
-	_id_customer INT,
-	_id_product_details INT,
-	_quantity INT,
-	_date_created DATETIME,
-	_date_updated DATETIME,
-	CONSTRAINT FK_cart_idCustomer FOREIGN KEY(_id_customer) REFERENCES dbo.customer(_id_customer) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_cart_idProductDetails FOREIGN KEY(_id_product_details) REFERENCES dbo.product_details(_id_product_details) ON UPDATE CASCADE ON DELETE CASCADE
-);
-GO
-CREATE TABLE dbo.comments(
-	_id_comments INT IDENTITY(1,1) PRIMARY KEY,
-	_id_customer INT,
-	_id_product_details INT,
-	_comment NVARCHAR(255),
-	_status NVARCHAR(100),
-	CONSTRAINT FK_comments_idCustomer FOREIGN KEY(_id_customer) REFERENCES dbo.customer(_id_customer) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_comments_idProductDetails FOREIGN KEY(_id_product_details) REFERENCES dbo.product_details(_id_product_details) ON UPDATE CASCADE ON DELETE CASCADE
-);
-GO
-CREATE TABLE dbo.orders(
-	_id_orders INT IDENTITY(1,1) PRIMARY KEY,
-	_order_code VARCHAR(20) UNIQUE NOT NULL,
-	_id_customer INT,
-	_id_admin INT,
-	_id_coupons INT,
-	_customer_name NVARCHAR(100),
-	_phone_number VARCHAR(15),
-	_address NVARCHAR(255),
-	_transport_price DECIMAL(38,5), -- Tiền vận chuyển
-	_reduced_price DECIMAL(38,5), -- Tiền giảm từ coupons
-	_exchange_price DECIMAL(38,5), -- Đổi điểm sang tiền
-	_total_price DECIMAL(38,5), -- Tổng tiền hóa đơn sử dụng để thống kê
-	_total_payouts DECIMAL(38,5), -- Tổng tiền KH cần thanh toán bao gồm cả phí vận chuyển
-	_order_type NVARCHAR(255),
-	_status NVARCHAR(255),
-	_date_created DATETIME,
-	_date_updated DATETIME,
-	CONSTRAINT FK_orders_idCustomer FOREIGN KEY(_id_customer) REFERENCES dbo.customer(_id_customer)ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_orders_idAdmin FOREIGN KEY(_id_admin) REFERENCES dbo.admins(_id_admin) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_orders_idCoupons FOREIGN KEY(_id_coupons) REFERENCES dbo.coupons(_id_coupons) ON UPDATE CASCADE ON DELETE CASCADE
-);
-GO
-CREATE TABLE dbo.order_details(
-	_id_order_details INT IDENTITY(1,1) PRIMARY KEY,
-	_id_product_details INT,
-	_id_orders INT,
-	_quantity INT,
-	_total_price DECIMAL(38,5),
-	_status NVARCHAR(255),
-	CONSTRAINT FK_orderDetails_idProductDetails FOREIGN KEY(_id_product_details) REFERENCES dbo.product_details(_id_product_details) ON UPDATE CASCADE ON DELETE CASCADE,
-	CONSTRAINT FK_orderDetails_idOrders FOREIGN KEY(_id_orders) REFERENCES dbo.orders(_id_orders) ON UPDATE CASCADE ON DELETE CASCADE
 
+CREATE TABLE categories(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	category_code VARCHAR(100) UNIQUE NOT NULL,
+	category_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	description VARCHAR(255) DEFAULT ''
 );
-GO
-CREATE TABLE dbo.order_history(
-	_id_order_history INT IDENTITY(1,1) PRIMARY KEY,
-	_id_orders INT,
-	_description NVARCHAR(255),
-	_changed_time DATETIME,
-	CONSTRAINT FK_orderHistory_idOrders FOREIGN KEY(_id_orders) REFERENCES dbo.orders(_id_orders) ON UPDATE CASCADE ON DELETE CASCADE
+
+CREATE TABLE materials(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	material_code VARCHAR(100) UNIQUE NOT NULL,
+	material_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	description VARCHAR(255) DEFAULT ''
 );
-GO
 
-ALTER TABLE dbo.product ADD _weight FLOAT
+CREATE TABLE soles(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	sole_code VARCHAR(100) UNIQUE NOT NULL,
+	sole_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	description VARCHAR(255) DEFAULT ''
+);
 
+CREATE TABLE colors(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	color_code VARCHAR(100) UNIQUE NOT NULL,
+	color_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	description VARCHAR(255) DEFAULT ''
+);
+
+CREATE TABLE sizes(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	size_code VARCHAR(100) UNIQUE NOT NULL,
+	size_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	description VARCHAR(255) DEFAULT ''
+);
+
+
+CREATE TABLE coupons(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	coupons_code VARCHAR(100) UNIQUE NOT NULL,
+	conditions DECIMAL(65,5) DEFAULT 0,
+	coupons_price DECIMAL(65,5) DEFAULT 0,
+	quantity INT DEFAULT 0,
+	start_date DATETIME DEFAULT CURRENT_DATE,
+	end_date DATETIME DEFAULT CURRENT_DATE,
+	created_at DATETIME DEFAULT CURRENT_DATE,
+	updated_at DATETIME DEFAULT CURRENT_DATE,
+	is_active TINYINT(1) DEFAULT 1
+);
+
+CREATE TABLE sales(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	sale_code VARCHAR(100) UNIQUE NOT NULL,
+	sale_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	percent FLOAT DEFAULT 0,
+	start_date DATETIME DEFAULT CURRENT_DATE,
+	end_date DATETIME DEFAULT CURRENT_DATE,
+	created_at DATETIME DEFAULT CURRENT_DATE,
+	updated_at DATETIME DEFAULT CURRENT_DATE,
+	is_active TINYINT(1) DEFAULT 1
+);
+
+CREATE TABLE products(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	product_code VARCHAR(100) UNIQUE NOT NULL,
+	product_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	id_brand INT NOT NULL,
+	id_category INT NOT NULL,
+	id_sole INT NOT NULL,
+	id_material INT NOT NULL,
+	created_at DATETIME DEFAULT CURRENT_DATE,
+	updated_at DATETIME DEFAULT CURRENT_DATE,
+	CONSTRAINT FK_product_brand FOREIGN KEY(id_brand) REFERENCES brands(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_product_category FOREIGN KEY(id_category) REFERENCES categories(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_product_sole FOREIGN KEY(id_sole) REFERENCES soles(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_product_material FOREIGN KEY(id_material) REFERENCES materials(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
+
+CREATE TABLE product_images(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	id_product INT NOT NULL,
+	images VARCHAR(255) DEFAULT '',
+	CONSTRAINT FK_images_product FOREIGN KEY(id_product) REFERENCES products(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
+
+CREATE TABLE product_details(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	id_product INT NOT NULL,
+	id_color INT NOT NULL,
+	id_size INT NOT NULL,
+	id_sale INT NOT NULL,
+	weight FLOAT DEFAULT 0,
+	price_old DECIMAL(65,5) DEFAULT 0,
+	price_new DECIMAL(65,5) DEFAULT 0,
+	quantity INT DEFAULT 0,
+	status VARCHAR(30) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	created_at DATETIME DEFAULT CURRENT_DATE,
+	updated_at DATETIME DEFAULT CURRENT_DATE,
+	CONSTRAINT FK_productDetails_product FOREIGN KEY(id_product) REFERENCES products(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_productDetails_color FOREIGN KEY(id_color) REFERENCES colors(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_productDetails_size FOREIGN KEY(id_size) REFERENCES sizes(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_productDetails_sale FOREIGN KEY(id_sale) REFERENCES sales(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
+
+CREATE TABLE history_sales(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	id_product_details INT NOT NULL,
+	id_sale INT NOT NULL,
+	is_active TINYINT(1) DEFAULT 1,
+	CONSTRAINT FK_history_sale_productDetails FOREIGN KEY(id_product_details) REFERENCES product_details(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_history_sale_sales FOREIGN KEY(id_sale) REFERENCES sales(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
+
+CREATE TABLE carts(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	id_customer INT NOT NULL,
+	id_product_details INT NOT NULL,
+	quantity INT DEFAULT 0,
+	created_at DATETIME DEFAULT CURRENT_DATE,
+	updated_at DATETIME DEFAULT CURRENT_DATE,
+	CONSTRAINT FK_cart_customer FOREIGN KEY(id_customer) REFERENCES customers(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_cart_productDetails FOREIGN KEY(id_product_details) REFERENCES product_details(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
+
+CREATE TABLE comments(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	id_customer INT NOT NULL,
+	id_product_details INT NOT NULL,
+	comment VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	CONSTRAINT FK_comments_customer FOREIGN KEY(id_customer) REFERENCES customers(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_comments_productDetails FOREIGN KEY(id_product_details) REFERENCES product_details(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
+
+CREATE TABLE orders(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	order_code VARCHAR(100) UNIQUE NOT NULL,
+	id_customer INT NULL,
+	id_staff INT NOT NULL,
+	id_coupons INT NULL,
+	customer_name VARCHAR(100) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	phone_number VARCHAR(13) DEFAULT '',
+	address VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	transport_price DECIMAL(65,5) DEFAULT 0,
+	reduced_price DECIMAL(65,5) DEFAULT 0,
+	total_price DECIMAL(65,5) DEFAULT 0,
+	total_payouts DECIMAL(65,5) DEFAULT 0,
+	order_type VARCHAR(255) DEFAULT '',
+	status VARCHAR(255) DEFAULT '',
+	created_at DATETIME DEFAULT CURRENT_DATE,
+	updated_at DATETIME DEFAULT CURRENT_DATE,
+	CONSTRAINT FK_orders_customer FOREIGN KEY(id_customer) REFERENCES customers(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_orders_staff FOREIGN KEY(id_staff) REFERENCES staffs(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_orders_coupons FOREIGN KEY(id_coupons) REFERENCES coupons(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
+
+CREATE TABLE order_details(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	id_product_details INT NOT NULL,
+	id_orders INT NOT NULL,
+	quantity INT DEFAULT 0,
+	total_price DECIMAL(65,5) DEFAULT 0,
+	status VARCHAR(255) DEFAULT '',
+	CONSTRAINT FK_orderDetails_productDetails FOREIGN KEY(id_product_details) REFERENCES product_details(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE,
+	CONSTRAINT FK_orderDetails_orders FOREIGN KEY(id_orders) REFERENCES orders(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
+
+CREATE TABLE order_history(
+	id INT AUTO_INCREMENT PRIMARY KEY,
+	id_orders INT NOT NULL,
+	description VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
+	changed_time DATETIME DEFAULT CURRENT_DATE,
+	CONSTRAINT FK_orderHistory_orders FOREIGN KEY(id_orders) REFERENCES orders(id) 
+	ON UPDATE CASCADE 
+	ON DELETE CASCADE
+);
