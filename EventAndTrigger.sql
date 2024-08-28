@@ -1,5 +1,5 @@
 SET GLOBAL event_scheduler = ON;
-
+# Event update status coupons when end_date < Now()
 DELIMITER //
 CREATE EVENT update_coupons_status_event 
 ON SCHEDULE EVERY 1 SECOND 
@@ -9,7 +9,7 @@ BEGIN
 	WHERE end_date < NOW() AND is_active = 1;
 END //
 DELIMITER ;
-
+# Event update status sales when end_date < Now()
 DELIMITER //
 CREATE EVENT update_sale_status_event 
 ON SCHEDULE EVERY 1 SECOND 
@@ -19,7 +19,7 @@ BEGIN
 	WHERE end_date < NOW() AND is_active = 1;
 END //
 DELIMITER ;
-
+#Trigger update history sale set is_active when sale update
 DELIMITER //
 CREATE TRIGGER update_history_sale_trigger 
 AFTER UPDATE ON sales 
@@ -31,7 +31,7 @@ BEGIN
 	END IF; 
 END //
 DELIMITER ;
-
+#Trigger update product details set price_new when history_sales update
 DELIMITER //
 CREATE TRIGGER update_product_details_trigger 
 AFTER UPDATE ON history_sales 
@@ -48,7 +48,7 @@ BEGIN
 	END IF;
 END //
 DELIMITER ;
-
+#Trigger update product details set status when product details update
 DELIMITER //
 CREATE TRIGGER update_product_details_status_trigger 
 AFTER UPDATE ON product_details 
