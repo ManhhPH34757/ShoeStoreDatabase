@@ -87,10 +87,10 @@ CREATE TABLE sizes(
 	description VARCHAR(255) DEFAULT ''
 );
 
-
 CREATE TABLE coupons(
 	id INT AUTO_INCREMENT PRIMARY KEY,
 	coupons_code VARCHAR(100) UNIQUE NOT NULL,
+	coupons_name VARCHAR(255) CHARACTER SET UTF8MB4 COLLATE UTF8MB4_UNICODE_CI DEFAULT '',
 	conditions DECIMAL(65,5) DEFAULT 0,
 	coupons_price DECIMAL(65,5) DEFAULT 0,
 	quantity INT DEFAULT 0,
@@ -151,7 +151,6 @@ CREATE TABLE product_details(
 	id_product INT NOT NULL,
 	id_color INT NOT NULL,
 	id_size INT NOT NULL,
-	id_sale INT NOT NULL,
 	weight FLOAT DEFAULT 0,
 	price_old DECIMAL(65,5) DEFAULT 0,
 	price_new DECIMAL(65,5) DEFAULT 0,
@@ -166,9 +165,6 @@ CREATE TABLE product_details(
 	ON UPDATE CASCADE 
 	ON DELETE CASCADE,
 	CONSTRAINT FK_productDetails_size FOREIGN KEY(id_size) REFERENCES sizes(id) 
-	ON UPDATE CASCADE 
-	ON DELETE CASCADE,
-	CONSTRAINT FK_productDetails_sale FOREIGN KEY(id_sale) REFERENCES sales(id) 
 	ON UPDATE CASCADE 
 	ON DELETE CASCADE
 );
