@@ -19,33 +19,16 @@ BEGIN
 	WHERE end_date < NOW() AND is_active = 1;
 END //
 DELIMITER ;
-#Trigger update history sale set is_active when sale update
+#Trigger update product_details_sale set is_active when sale update
 DELIMITER //
-CREATE TRIGGER update_history_sale_trigger 
+CREATE TRIGGER update_product_details_sale_trigger 
 AFTER UPDATE ON sales 
 FOR EACH ROW 
 BEGIN 
 	IF NEW.is_active = 0 THEN 
-		UPDATE history_sales SET is_active = 0 
+		UPDATE product_details_sales SET is_active = 0 
 		WHERE id_sale = NEW.id; 
 	END IF; 
-END //
-DELIMITER ;
-#Trigger update product details set price_new when history_sales update
-DELIMITER //
-CREATE TRIGGER update_product_details_trigger 
-AFTER UPDATE ON history_sales 
-FOR EACH ROW 
-BEGIN 
-	IF NEW.is_active = 1 THEN 
-		UPDATE product_details SET price_new = price_old * (
-			SELECT percent FROM sales WHERE id = NEW.id_sale
-		)
-		WHERE id = NEW.id_product_details;
-	ELSEIF NEW.is_active = 0 THEN 
-		UPDATE product_details SET price_new = price_old 
-		WHERE id = NEW.id_product_details;
-	END IF;
 END //
 DELIMITER ;
 #Trigger update product details set status when product details update
@@ -55,10 +38,10 @@ AFTER UPDATE ON product_details
 FOR EACH ROW 
 BEGIN 
 	IF NEW.quantity = 0 THEN 
-		UPDATE product_details SET status = 'Hết hàng' 
+		UPDATE product_details SET status = 'Inactive' 
 		WHERE id = NEW.id;
 	ELSEIF NEW.quantity <> 0 THEN 
-		UPDATE product_details SET STATUS = 'Còn hàng' 
+		UPDATE product_details SET STATUS = 'Active' 
 		WHERE id = NEW.id;
 	END IF;
 END //
