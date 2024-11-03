@@ -271,3 +271,9 @@ CREATE TABLE comments(
 
 ALTER TABLE orders 
 ADD shipping_status VARCHAR(255) DEFAULT '';
+
+ALTER TABLE orders 
+ADD payment_method VARCHAR(255) DEFAULT '';
+
+ALTER TABLE order_details 
+ADD product_status VARCHAR(255) DEFAULT '';
