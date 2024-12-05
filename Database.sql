@@ -251,7 +251,6 @@ CREATE TABLE order_history(
 	ON DELETE CASCADE
 );
 
-
 CREATE TABLE comments(
 	id VARCHAR(255) PRIMARY KEY DEFAULT (UUID()),
 	id_customer VARCHAR(255) NOT NULL,
@@ -277,3 +276,9 @@ ADD payment_method VARCHAR(255) DEFAULT '';
 
 ALTER TABLE order_details 
 ADD product_status VARCHAR(255) DEFAULT '';
+
+ALTER TABLE order_history
+ADD icon VARCHAR(30) DEFAULT '';
+
+ALTER TABLE coupons
+ADD max_reduced_price DECIMAL(65,5) DEFAULT 0;
